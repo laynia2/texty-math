@@ -20,6 +20,27 @@ function formatMoney(n) {
   }).format(n);
 }
 
+function extractAmount(trimmed) {
+  const tokens = trimmed.split(/\s+/);
+  for (let i = tokens.length - 1; i >= 0; i--) {
+    const cleaned = tokens[i].replace(/[$,]/g, "");
+    if (/^-?\d+(\.\d+)?$/.test(cleaned)) {
+      return parseFloat(cleaned);
+    }
+  }
+  return null;
+}
+
+function extractDueDate(trimmed) {
+  const tokens = trimmed.split(/\s+/);
+  for (const token of tokens) {
+    if (/^\d{1,2}\/\d{1,2}$/.test(token)) {
+      return token;
+    }
+  }
+  return "";
+}
+
 function calculate() {
   const lines = input.value.split("\n");
 
@@ -42,38 +63,39 @@ function calculate() {
       return;
     }
 
-    const matches = trimmed.match(/-?\d+(\.\d+)?/g);
+    const value = extractAmount(trimmed);
 
-    if (!matches) {
+    if (value === null) {
       result += `${line}\n`;
       return;
     }
 
-    const value = parseFloat(matches[matches.length - 1]);
     const lower = trimmed.toLowerCase();
+    const dueDate = extractDueDate(trimmed);
+    const dueText = dueDate ? ` [due ${dueDate}]` : "";
 
     if (lower.startsWith("paid ")) {
       paidTotal += value;
-      result += `✅ ${line}  →  ${formatMoney(value)}\n`;
+      result += `✅ ${line}  →  ${formatMoney(value)}${dueText}\n`;
       return;
     }
 
     if (lower.startsWith("auto ")) {
       autoTotal += value;
       total += value;
-      result += `🔁 ${line}  →  ${formatMoney(value)}\n`;
+      result += `🔁 ${line}  →  ${formatMoney(value)}${dueText}\n`;
       return;
     }
 
     if (lower.startsWith("manual ")) {
       manualTotal += value;
       total += value;
-      result += `🖐 ${line}  →  ${formatMoney(value)}\n`;
+      result += `🖐 ${line}  →  ${formatMoney(value)}${dueText}\n`;
       return;
     }
 
     total += value;
-    result += `${line}  →  ${formatMoney(value)}\n`;
+    result += `${line}  →  ${formatMoney(value)}${dueText}\n`;
   });
 
   manualTotalEl.textContent = formatMoney(manualTotal);
