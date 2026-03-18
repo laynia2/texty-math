@@ -18,14 +18,19 @@ function calculate() {
     const trimmed = line.trim();
 
     if (trimmed !== "") {
-      const match = trimmed.match(/-?\d+(\.\d+)?(?=\s*$)/);
-      if (match) {
-        value = parseFloat(match[0]);
+      const matches = trimmed.match(/-?\d+(\.\d+)?/g);
+
+      if (matches) {
+        value = parseFloat(matches[matches.length - 1]);
         total += value;
       }
     }
 
-    result += `${line}${value !== "" ? "  →  " + value : ""}\n`;
+    if (value !== "") {
+      result += `${line}  →  ${value}\n`;
+    } else {
+      result += `${line}\n`;
+    }
   });
 
   result += `\nTOTAL: ${total}`;
