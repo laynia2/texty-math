@@ -6,11 +6,35 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <h1>Texty Math</h1>
+  <p class="subtitle">Manual, autopay, and paid bills in plain text.</p>
 
-  <textarea id="input" placeholder="Type bills or math here..."></textarea>
+  <textarea id="input" placeholder="Example:
+manual Mortgage 1500
+auto Internet 80
+paid Water 45"></textarea>
+
+  <div id="summary">
+    <div class="card">
+      <div class="card-label">Manual Due</div>
+      <div class="card-value" id="manualTotal">$0.00</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Autopay Due</div>
+      <div class="card-value" id="autoTotal">$0.00</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Paid</div>
+      <div class="card-value" id="paidTotal">$0.00</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Total Due</div>
+      <div class="card-value" id="grandTotal">$0.00</div>
+    </div>
+  </div>
 
   <div id="output"></div>
 
-  <script src="script.js?v=3"></script>
+  <script src="script.js?v=5"></script>
 </body>
 </html>
