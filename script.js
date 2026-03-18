@@ -1,10 +1,8 @@
 const input = document.getElementById("input");
 const output = document.getElementById("output");
 
-// load saved text
 input.value = localStorage.getItem("text") || "";
 
-// update on typing
 input.addEventListener("input", () => {
   localStorage.setItem("text", input.value);
   calculate();
@@ -17,17 +15,17 @@ function calculate() {
 
   lines.forEach(line => {
     let value = "";
+    const trimmed = line.trim();
 
-    try {
-      if (line.trim() !== "") {
-        value = eval(line);
-        if (!isNaN(value)) {
-          total += value;
-        }
+    if (trimmed !== "") {
+      const match = trimmed.match(/-?\d+(\.\d+)?(?=\s*$)/);
+      if (match) {
+        value = parseFloat(match[0]);
+        total += value;
       }
-    } catch {}
+    }
 
-    result += `${line}  →  ${value}\n`;
+    result += `${line}${value !== "" ? "  →  " + value : ""}\n`;
   });
 
   result += `\nTOTAL: ${total}`;
