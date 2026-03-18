@@ -17,7 +17,11 @@ function formatMoney(n) {
 
 function calculate() {
   const lines = input.value.split("\n");
+
   let total = 0;
+  let manualTotal = 0;
+  let autoTotal = 0;
+  let paidTotal = 0;
   let result = "";
 
   lines.forEach(line => {
@@ -28,35 +32,52 @@ function calculate() {
       return;
     }
 
-    if (
-      trimmed.startsWith("---") ||
-      trimmed.startsWith("#")
-    ) {
-      result += `${line}\n`;
-      return;
-    }
-
-    if (
-      trimmed.startsWith("x ") ||
-      trimmed.startsWith("[x]") ||
-      trimmed.startsWith("paid ")
-    ) {
+    if (trimmed.startsWith("#") || trimmed.startsWith("---")) {
       result += `${line}\n`;
       return;
     }
 
     const matches = trimmed.match(/-?\d+(\.\d+)?/g);
 
-    if (matches) {
-      const value = parseFloat(matches[matches.length - 1]);
-      total += value;
-      result += `${line}  →  ${formatMoney(value)}\n`;
-    } else {
+    if (!matches) {
       result += `${line}\n`;
+      return;
     }
+
+    const value = parseFloat(matches[matches.length - 1]);
+    const lower = trimmed.toLowerCase();
+
+    if (lower.startsWith("paid ")) {
+      paidTotal += value;
+      result += `✅ ${line}  →  ${formatMoney(value)}\n`;
+      return;
+    }
+
+    if (lower.startsWith("auto ")) {
+      autoTotal += value;
+      total += value;
+      result += `🔁 ${line}  →  ${formatMoney(value)}\n`;
+      return;
+    }
+
+    if (lower.startsWith("manual ")) {
+      manualTotal += value;
+      total += value;
+      result += `🖐 ${line}  →  ${formatMoney(value)}\n`;
+      return;
+    }
+
+    total += value;
+    result += `${line}  →  ${formatMoney(value)}\n`;
   });
 
-  result += `\nTOTAL DUE: ${formatMoney(total)}`;
+  result += `
+
+MANUAL DUE: ${formatMoney(manualTotal)}
+AUTOPAY DUE: ${formatMoney(autoTotal)}
+PAID: ${formatMoney(paidTotal)}
+TOTAL DUE: ${formatMoney(total)}`;
+
   output.textContent = result;
 }
 
