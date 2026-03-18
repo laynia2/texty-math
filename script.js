@@ -1,6 +1,11 @@
 const input = document.getElementById("input");
 const output = document.getElementById("output");
 
+const manualTotalEl = document.getElementById("manualTotal");
+const autoTotalEl = document.getElementById("autoTotal");
+const paidTotalEl = document.getElementById("paidTotal");
+const grandTotalEl = document.getElementById("grandTotal");
+
 input.value = localStorage.getItem("text") || "";
 
 input.addEventListener("input", () => {
@@ -71,12 +76,10 @@ function calculate() {
     result += `${line}  →  ${formatMoney(value)}\n`;
   });
 
-  result += `
-
-MANUAL DUE: ${formatMoney(manualTotal)}
-AUTOPAY DUE: ${formatMoney(autoTotal)}
-PAID: ${formatMoney(paidTotal)}
-TOTAL DUE: ${formatMoney(total)}`;
+  manualTotalEl.textContent = formatMoney(manualTotal);
+  autoTotalEl.textContent = formatMoney(autoTotal);
+  paidTotalEl.textContent = formatMoney(paidTotal);
+  grandTotalEl.textContent = formatMoney(total);
 
   output.textContent = result;
 }
