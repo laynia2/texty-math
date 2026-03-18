@@ -41,6 +41,60 @@ function extractDueDate(trimmed) {
   return "";
 }
 
+function parseDueDate(dateText) {
+  if (!dateText) return null;
+
+  const parts = dateText.split("/");
+  const month = parseInt(parts[0], 10);
+  const day = parseInt(parts[1], 10);
+
+  if (!month || !day) return null;
+
+  const now = new Date();
+  const year = now.getFullYear();
+  const date = new Date(year, month - 1, day);
+
+  if (date.getMonth() !== month - 1 || date.getDate() !== day) return null;
+
+  date.setHours(0, 0, 0, 0);
+  return date;
+}
+
+function getStatus(trimmed, dueDateText) {
+  const lower = trimmed.toLowerCase();
+
+  if (lower.startsWith("paid ")) {
+    return { icon: "✅", label: "paid" };
+  }
+
+  if (!dueDateText) {
+    if (lower.startsWith("auto ")) return { icon: "🔁", label: "autopay" };
+    if (lower.startsWith("manual ")) return { icon: "🖐", label: "manual" };
+    return { icon: "", label: "normal" };
+  }
+
+  const dueDate = parseDueDate(dueDateText);
+
+  if (!dueDate) {
+    if (lower.startsWith("auto ")) return { icon: "🔁", label: "autopay" };
+    if (lower.startsWith("manual ")) return { icon: "🖐", label: "manual" };
+    return { icon: "", label: "normal" };
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const diffMs = dueDate - today;
+  const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffDays < 0) return { icon: "🚨", label: "overdue" };
+  if (diffDays <= 3) return { icon: "⏰", label: "soon" };
+
+  if (lower.startsWith("auto ")) return { icon: "🔁", label: "autopay" };
+  if (lower.startsWith("manual ")) return { icon: "🖐", label: "manual" };
+  return { icon: "", label: "normal" };
+}
+
 function calculate() {
   const lines = input.value.split("\n");
 
@@ -71,31 +125,32 @@ function calculate() {
     }
 
     const lower = trimmed.toLowerCase();
-    const dueDate = extractDueDate(trimmed);
-    const dueText = dueDate ? ` [due ${dueDate}]` : "";
+    const dueDateText = extractDueDate(trimmed);
+    const dueText = dueDateText ? ` [due ${dueDateText}]` : "";
+    const status = getStatus(trimmed, dueDateText);
 
     if (lower.startsWith("paid ")) {
       paidTotal += value;
-      result += `✅ ${line}  →  ${formatMoney(value)}${dueText}\n`;
+      result += `${status.icon} ${line}  →  ${formatMoney(value)}${dueText}\n`;
       return;
     }
 
     if (lower.startsWith("auto ")) {
       autoTotal += value;
       total += value;
-      result += `🔁 ${line}  →  ${formatMoney(value)}${dueText}\n`;
+      result += `${status.icon} ${line}  →  ${formatMoney(value)}${dueText}\n`;
       return;
     }
 
     if (lower.startsWith("manual ")) {
       manualTotal += value;
       total += value;
-      result += `🖐 ${line}  →  ${formatMoney(value)}${dueText}\n`;
+      result += `${status.icon} ${line}  →  ${formatMoney(value)}${dueText}\n`;
       return;
     }
 
     total += value;
-    result += `${line}  →  ${formatMoney(value)}${dueText}\n`;
+    result += `${status.icon} ${line}  →  ${formatMoney(value)}${dueText}\n`;
   });
 
   manualTotalEl.textContent = formatMoney(manualTotal);
