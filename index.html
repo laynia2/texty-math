@@ -1,19 +1,77 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Texty Math</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h1>Texty Math</h1>
-  <p class="subtitle">Bills in plain text with smart totals, statuses, and upcoming views.</p>
+  <p class="subtitle">Plain-text bills, income, accounts, filters, recurring templates, and cash-flow planning.</p>
+
+  <div class="quick-add-card">
+    <div class="section-title">Quick Add</div>
+
+    <div class="quick-grid">
+      <select id="qaStatus">
+        <option value="[ ]">[ ] Unpaid</option>
+        <option value="[x]">[x] Paid</option>
+        <option value="done">done</option>
+        <option value="paid">paid</option>
+        <option value="skip">skip</option>
+      </select>
+
+      <select id="qaType">
+        <option value="manual">manual</option>
+        <option value="auto">auto</option>
+        <option value="income">income</option>
+      </select>
+
+      <input id="qaDate" type="text" placeholder="4/22">
+      <input id="qaTitle" type="text" placeholder="Electric">
+      <input id="qaAmount" type="text" placeholder="120">
+      <input id="qaAccount" type="text" placeholder="Checking">
+    </div>
+
+    <div class="quick-actions">
+      <button id="addLineBtn" class="action-btn primary">Add Line</button>
+      <button id="addBalanceBtn" class="action-btn">Add Balance</button>
+      <button id="addMonthlyBtn" class="action-btn">Add Monthly Template</button>
+      <button id="exportBtn" class="action-btn">Export</button>
+      <label class="action-btn file-label">
+        Import
+        <input id="importFile" type="file" accept=".txt,.md,.json,text/plain">
+      </label>
+    </div>
+  </div>
 
   <textarea id="input" placeholder="Example:
+balance Checking 2500
+balance Credit Card -800
+
+income 4/01 Daniel paycheck 3200
+income 4/15 Brittany paycheck 2800
+
 [ ] manual 4/20 Electric 120 from Checking
 auto 4/22 Internet 80 from Credit Card
-done 4/18 Mortgage 1500 from Checking
-income 4/15 Daniel paycheck 3200"></textarea>
+done manual 4/18 Mortgage 1500 from Checking
+
+monthly manual 1 Mortgage 1850 from Checking
+monthly auto 5 Internet 80 from Credit Card"></textarea>
+
+  <div class="toolbar">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="attention">Needs Attention</button>
+    <button class="filter-btn" data-filter="overdue">Overdue</button>
+    <button class="filter-btn" data-filter="this-week">This Week</button>
+    <button class="filter-btn" data-filter="manual">Manual</button>
+    <button class="filter-btn" data-filter="auto">Autopay</button>
+    <button class="filter-btn" data-filter="income">Income</button>
+    <button class="filter-btn" data-filter="paid">Paid</button>
+    <button class="filter-btn" data-filter="skipped">Skipped</button>
+    <button class="filter-btn" data-filter="checking">Checking</button>
+  </div>
 
   <div id="summary">
     <div class="card">
@@ -29,6 +87,10 @@ income 4/15 Daniel paycheck 3200"></textarea>
       <div class="card-value" id="paidTotal">$0.00</div>
     </div>
     <div class="card">
+      <div class="card-label">Skipped</div>
+      <div class="card-value" id="skippedTotal">$0.00</div>
+    </div>
+    <div class="card accent-card">
       <div class="card-label">Total Due</div>
       <div class="card-value" id="grandTotal">$0.00</div>
     </div>
@@ -39,6 +101,10 @@ income 4/15 Daniel paycheck 3200"></textarea>
     <div class="card accent-card">
       <div class="card-label">Net</div>
       <div class="card-value" id="netTotal">$0.00</div>
+    </div>
+    <div class="card accent-card">
+      <div class="card-label">Overdue Total</div>
+      <div class="card-value" id="overdueTotal">$0.00</div>
     </div>
   </div>
 
@@ -62,13 +128,22 @@ income 4/15 Daniel paycheck 3200"></textarea>
     </div>
   </div>
 
-  <div id="accountsCard" class="next-up-card">
-    <div class="next-up-label">By Account</div>
-    <div id="accountsBreakdown"></div>
+  <div class="double-cards">
+    <div class="info-card">
+      <div class="info-card-label">Account Balances</div>
+      <div class="info-card-value" id="accountsHeadline">No balances yet</div>
+      <div class="info-card-list" id="accountsBreakdown"></div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-card-label">Paycheck Plan</div>
+      <div class="info-card-value" id="paycheckHeadline">No paycheck plan yet</div>
+      <div class="info-card-list" id="paycheckList"></div>
+    </div>
   </div>
 
   <div id="output"></div>
 
-  <script src="script.js?v=10"></script>
+  <script src="script.js?v=11"></script>
 </body>
 </html>
