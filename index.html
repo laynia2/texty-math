@@ -7,60 +7,68 @@
 </head>
 <body>
   <h1>Texty Math</h1>
-  <p class="subtitle">Bills in plain text with smart totals and sorting.</p>
-
-  <div class="toolbar">
-    <button class="filter-btn active" data-filter="all">All</button>
-    <button class="filter-btn" data-filter="attention">Needs Attention</button>
-    <button class="filter-btn" data-filter="manual">Manual</button>
-    <button class="filter-btn" data-filter="auto">Autopay</button>
-    <button class="filter-btn" data-filter="paid">Paid</button>
-  </div>
+  <p class="subtitle">Bills in plain text with smart totals, statuses, and upcoming views.</p>
 
   <textarea id="input" placeholder="Example:
-manual 3/22 Mortgage 1500
-auto 3/25 Internet 80
-paid 3/10 Water 45"></textarea>
+[ ] manual 4/20 Electric 120 from Checking
+auto 4/22 Internet 80 from Credit Card
+done 4/18 Mortgage 1500 from Checking
+income 4/15 Daniel paycheck 3200"></textarea>
 
   <div id="summary">
-  <div class="card">
-    <div class="card-label">Manual Due</div>
-    <div class="card-value" id="manualTotal">$0.00</div>
+    <div class="card">
+      <div class="card-label">Manual Due</div>
+      <div class="card-value" id="manualTotal">$0.00</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Autopay Due</div>
+      <div class="card-value" id="autoTotal">$0.00</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Paid</div>
+      <div class="card-value" id="paidTotal">$0.00</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Total Due</div>
+      <div class="card-value" id="grandTotal">$0.00</div>
+    </div>
+    <div class="card accent-card">
+      <div class="card-label">Income</div>
+      <div class="card-value" id="incomeTotal">$0.00</div>
+    </div>
+    <div class="card accent-card">
+      <div class="card-label">Net</div>
+      <div class="card-value" id="netTotal">$0.00</div>
+    </div>
   </div>
-  <div class="card">
-    <div class="card-label">Autopay Due</div>
-    <div class="card-value" id="autoTotal">$0.00</div>
-  </div>
-  <div class="card">
-    <div class="card-label">Paid</div>
-    <div class="card-value" id="paidTotal">$0.00</div>
-  </div>
-  <div class="card">
-    <div class="card-label">Total Due</div>
-    <div class="card-value" id="grandTotal">$0.00</div>
-  </div>
-  <div class="card accent-card">
-    <div class="card-label">Income</div>
-    <div class="card-value" id="incomeTotal">$0.00</div>
-  </div>
-  <div class="card accent-card">
-    <div class="card-label">Net</div>
-    <div class="card-value" id="netTotal">$0.00</div>
-  </div>
-</div>
 
-<div id="accountsCard" class="next-up-card">
-  <div class="next-up-label">By Account</div>
-  <div id="accountsBreakdown"></div>
-</div>
+  <div class="triple-cards">
+    <div class="info-card alert-card">
+      <div class="info-card-label">Overdue</div>
+      <div class="info-card-value" id="overdueHeadline">Nothing overdue</div>
+      <div class="info-card-list" id="overdueList"></div>
+    </div>
 
-  <div id="nextUpCard" class="next-up-card">
-    <div class="next-up-label">Next up</div>
-    <div class="next-up-value" id="nextUpValue">Nothing due</div>
+    <div class="info-card warning-card">
+      <div class="info-card-label">This Week</div>
+      <div class="info-card-value" id="thisWeekHeadline">Nothing due this week</div>
+      <div class="info-card-list" id="thisWeekList"></div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-card-label">Next Due</div>
+      <div class="info-card-value" id="nextUpValue">Nothing due</div>
+      <div class="info-card-list" id="nextUpMeta"></div>
+    </div>
+  </div>
+
+  <div id="accountsCard" class="next-up-card">
+    <div class="next-up-label">By Account</div>
+    <div id="accountsBreakdown"></div>
   </div>
 
   <div id="output"></div>
 
-  <script src="script.js?v=9"></script>
+  <script src="script.js?v=10"></script>
 </body>
 </html>
